@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BJ's Team Feud</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--red:#CC0000;--darkred:#990000;--gold:#ffffff;--black:#0a0a0a;--panel:#1a0000;--border:#3a0000}
+html,body{height:100%;background:var(--black);font-family:'Arial Black',Arial,sans-serif;overflow:hidden}
+#app{width:100%;height:100vh;display:flex;flex-direction:column;background:var(--black)}
+
+/* HEADER */
+.hdr{background:linear-gradient(180deg,#1a0000 0%,#0d0000 100%);border-bottom:3px solid var(--red);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo-area{display:flex;align-items:center;gap:16px}
+.logo-box{background:#1a0000;border:1px solid rgba(204,0,0,0.2);padding:8px 10px;border-radius:8px;display:flex;align-items:center;justify-content:center;min-width:100px;min-height:64px}
+.logo-box img{display:block;width:100px;max-height:56px;height:auto}
+.logo-box span{color:#ffffff}
+.game-title{font-size:18px;color:#cc4444;letter-spacing:2px;text-transform:uppercase;font-weight:700;font-family:Arial,sans-serif}
+.scores-wrap{display:flex;gap:28px;align-items:center}
+.score-box{text-align:center;background:#1a0000;border:1px solid var(--border);border-radius:12px;padding:14px 22px;min-width:120px;min-height:84px;cursor:pointer;transition:border-color .2s;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-box:hover{border-color:var(--red)}
+.sname{font-size:12px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.spts{font-size:30px;font-weight:900;color:var(--gold)}
+.bank-badge{background:var(--red);border-radius:24px;padding:12px 24px;text-align:center;min-height:84px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.bank-lbl{font-size:10px;color:#ffaaaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.bank-val{font-size:26px;font-weight:900;color:#fff}
+.hdr-btns{display:flex;gap:10px}
+.hdr-btn{background:transparent;border:1px solid #3a0000;border-radius:8px;color:#888;padding:8px 14px;cursor:pointer;font-size:13px;transition:all .2s;font-family:Arial,sans-serif}
+.hdr-btn:hover{border-color:var(--red);color:#fff}
+.music-btn{opacity:.75;transition:opacity .2s,background .2s,color .2s}
+.music-btn.active{background:var(--red);color:#fff;border-color:var(--red);opacity:1}
+
+/* SCREENS */
+.screen{flex:1;overflow:hidden;display:flex;flex-direction:column}
+#game-screen{display:none}
+#setup-screen{overflow-y:auto;padding:20px}
+
+/* SETUP TABS */
+.setup-header{text-align:center;margin-bottom:16px}
+.setup-header h1{color:var(--red);font-size:26px;font-style:italic}
+.setup-header p{color:#666;font-size:13px;font-family:Arial,sans-serif;margin-top:4px}
+.tab-row{display:flex;gap:0;margin-bottom:16px;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.tab{flex:1;padding:9px;text-align:center;cursor:pointer;font-size:13px;font-family:Arial,sans-serif;background:#0f0000;color:#666;transition:all .2s;border:none}
+.tab.active{background:var(--red);color:#fff;font-weight:700}
+
+/* MANUAL SETUP */
+.round-card{background:#0f0000;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.rc-top{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.rc-num{background:var(--red);color:#fff;font-weight:900;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.rc-top input{flex:1;background:#1a0000;border:1px solid var(--border);border-radius:6px;color:#fff;padding:7px 12px;font-size:14px;font-family:Arial,sans-serif;outline:none}
+.rc-top input:focus{border-color:var(--red)}
+.rc-top button{background:#3a0000;border:none;border-radius:6px;color:#cc4444;padding:7px 12px;cursor:pointer;font-size:12px;font-family:Arial,sans-serif}
+.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ans-row{display:flex;gap:5px;align-items:center}
+.ans-n{color:var(--gold);font-size:11px;font-weight:900;width:14px;text-align:right;flex-shrink:0}
+.ans-row input[type=text]{flex:1;background:#1a0000;border:1px solid #2a0000;border-radius:5px;color:#fff;padding:5px 8px;font-size:12px;font-family:Arial,sans-serif;outline:none;min-width:0}
+.ans-row input[type=text]:focus{border-color:#660000}
+.ans-pts{width:44px;background:#1a0000;border:1px solid #2a0000;border-radius:5px;color:var(--gold);padding:5px 4px;font-size:12px;font-family:Arial,sans-serif;outline:none;text-align:center}
+.add-btn{width:100%;background:transparent;border:1px dashed #2a0000;border-radius:8px;color:#444;padding:10px;font-size:13px;cursor:pointer;margin-bottom:14px;font-family:Arial,sans-serif;transition:all .2s}
+.add-btn:hover{border-color:#660000;color:#888}
+
+/* BULK IMPORT */
+.bulk-wrap{background:#0f0000;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.bulk-wrap h3{color:var(--gold);font-size:13px;font-weight:700;margin-bottom:6px;font-family:Arial,sans-serif;letter-spacing:.5px}
+.bulk-wrap p{color:#555;font-size:12px;font-family:Arial,sans-serif;line-height:1.6;margin-bottom:10px}
+.bulk-wrap code{background:#1a0000;color:#cc6666;padding:2px 6px;border-radius:4px;font-size:11px}
+.bulk-ta{width:100%;background:#1a0000;border:1px solid var(--border);border-radius:8px;color:#fff;padding:12px;font-size:12px;font-family:'Courier New',monospace;resize:vertical;min-height:260px;outline:none;line-height:1.7}
+.bulk-ta:focus{border-color:var(--red)}
+.bulk-actions{display:flex;gap:8px;margin-top:10px}
+.bulk-btn{flex:1;padding:10px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:Arial,sans-serif;transition:opacity .2s}
+.bulk-btn:hover{opacity:.85}
+.bulk-btn.primary{background:var(--red);color:#fff}
+.bulk-btn.secondary{background:#1a0000;border:1px solid var(--border);color:#888}
+.bulk-msg{font-size:12px;font-family:Arial,sans-serif;margin-top:8px;min-height:16px;color:#66cc66}
+.bulk-msg.err{color:#cc4444}
+
+.start-btn{width:100%;background:var(--red);border:none;border-radius:10px;color:#fff;padding:14px;font-size:18px;font-weight:900;cursor:pointer;font-style:italic;letter-spacing:1px;transition:background .2s}
+.start-btn:hover{background:var(--darkred)}
+
+/* GAME BOARD */
+.game-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:15px 26px 13px;overflow:hidden}
+.q-box{background:#0f0000;border:2px solid var(--red);border-radius:12px;padding:16px 32px;text-align:center;width:100%;max-width:910px}
+.q-label{font-size:10px;color:#666;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;margin-bottom:4px}
+.q-text{color:#fff;font-size:clamp(18px,3vw,28px);font-weight:900;font-style:italic}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:910px}
+
+/* TILES — answer text is fully invisible until revealed */
+.tile{background:#0f0000;border:2px solid #2a0000;border-radius:10px;padding:13px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .25s,background .25s;min-height:68px;user-select:none}
+.tile:hover:not(.revealed){border-color:#660000;background:#150000}
+.tile.revealed{background:#1a0000;border-color:var(--gold);animation:flipIn .4s ease}
+@keyframes flipIn{0%{transform:scaleY(0);opacity:0}60%{transform:scaleY(1.08)}100%{transform:scaleY(1);opacity:1}}
+.t-rank{font-size:26px;font-weight:900;min-width:26px;text-align:center;color:#3a0000;transition:color .3s}
+.tile.revealed .t-rank{color:var(--gold)}
+/* Answer text: completely invisible (not just dark) until revealed */
+.t-ans{flex:1;font-size:clamp(14px,2.3vw,21px);font-weight:900;font-style:italic;font-family:'Arial Black',Arial,sans-serif;
+  color:transparent;          /* fully invisible */
+  transition:color .3s}
+.tile.revealed .t-ans{color:#fff}
+/* Points badge: hidden until revealed */
+.t-pts{font-size:16px;font-weight:900;border-radius:4px;padding:3px 9px;
+  background:transparent;
+  color:transparent;
+  transition:background .3s,color .3s}
+.tile.revealed .t-pts{background:var(--red);color:#fff}
+
+.strikes-row{display:flex;gap:12px;align-items:center}
+.sx{width:73px;height:73px;border-radius:50%;border:3px solid #3a0000;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:900;color:transparent;transition:all .3s;font-style:italic}
+.sx.lit{color:var(--red);border-color:var(--red);background:rgba(204,0,0,.12);animation:pulse .3s ease}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.25)}100%{transform:scale(1)}}
+.ctrl-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.cbtn{background:#0f0000;border:1px solid #2a0000;border-radius:7px;color:#888;padding:10px 18px;cursor:pointer;font-size:15px;font-family:Arial,sans-serif;transition:all .2s;white-space:nowrap}
+.cbtn:hover{border-color:var(--red);color:#fff;background:#150000}
+.cbtn.gold{border-color:#7a5500;color:var(--gold)}
+.cbtn.gold:hover{background:#1a0f00;border-color:var(--gold)}
+.cbtn.danger{border-color:#660000;color:#cc4444}
+.cbtn.danger:hover{background:#1a0000;border-color:var(--red)}
+.nav-info{align-items:center;padding:0 4px;color:#555;font-size:11px;font-family:Arial,sans-serif}
+
+/* WINNER OVERLAY */
+#winner-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#winner-overlay.show{display:flex}
+.winner-card{position:absolute;inset:0;background:#1a0000;border:none;border-radius:0;padding:120px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:zoomIn .5s ease}
+@keyframes zoomIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.winner-card h2{font-size:56px;color:#888;letter-spacing:3px;text-transform:uppercase;font-family:Arial,sans-serif;margin-bottom:24px}
+.winner-card h1{font-size:160px;font-weight:900;color:var(--gold);font-style:italic;margin-bottom:12px}
+.winner-card p{font-size:72px;color:#cc4444;margin-bottom:72px;font-family:Arial,sans-serif}
+.winner-card button{background:var(--red);border:none;border-radius:8px;color:#fff;padding:36px 90px;font-size:64px;font-weight:900;cursor:pointer;font-style:italic}
+.winner-gif{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.4;pointer-events:none;z-index:0}
+.winner-logo{position:absolute;top:40px;left:40px;width:180px;height:auto;z-index:20}
+.winner-card > h2,
+.winner-card > h1,
+.winner-card > p,
+.winner-card > button{position:relative;z-index:10}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- GAME HEADER -->
+  <div class="hdr" id="main-hdr" style="display:none">
+    <div class="logo-area">
+      <div class="logo-box"><img class="logo-image" src="Images/bjs-logo.png" alt="BJ's Logo"></div>
+      <div class="game-title">Team Feud</div>
+    </div>
+    <div class="scores-wrap">
+      <div class="score-box" id="sb1" onclick="editName(1)">
+        <div class="sname" id="sn1">Team 1</div>
+        <div class="spts" id="sp1">0</div>
+      </div>
+      <div class="bank-badge">
+        <div class="bank-lbl">Points</div>
+        <div class="bank-val" id="bank-val">0</div>
+      </div>
+      <div class="score-box" id="sb2" onclick="editName(2)">
+        <div class="sname" id="sn2">Team 2</div>
+        <div class="spts" id="sp2">0</div>
+      </div>
+    </div>
+    <div class="hdr-btns">
+      <button class="hdr-btn" onclick="toggleFS()" id="fs-btn">⛶ Fullscreen</button>
+      <button class="hdr-btn music-btn" onclick="toggleMusic()" id="music-btn">▶</button>
+      <button class="hdr-btn" onclick="toggleMute()" id="mute-btn">🔊</button>
+      <button class="hdr-btn" onclick="goSetup()">✎ Edit</button>
+    </div>
+  </div>
+
+  <!-- SETUP SCREEN -->
+  <div id="setup-screen" class="screen">
+    <div class="setup-header">
+      <h1>BJ's Team Feud Builder</h1>
+      <p>Build questions manually or paste them in bulk</p>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab active" id="tab-manual" onclick="switchTab('manual')">✎ Manual Entry</button>
+      <button class="tab" id="tab-bulk" onclick="switchTab('bulk')">⬇ Bulk Import</button>
+    </div>
+
+    <!-- Manual tab -->
+    <div id="pane-manual">
+      <div id="rounds-container"></div>
+      <button class="add-btn" onclick="addRound()">+ Add Question</button>
+      <button class="start-btn" onclick="startGame()">▶ START GAME</button>
+      <div style="height:20px"></div>
+    </div>
+
+    <!-- Bulk tab -->
+    <div id="pane-bulk" style="display:none">
+      <div class="bulk-wrap">
+        <h3>BULK IMPORT FORMAT</h3>
+        <p>
+          Each question starts with <code>Q:</code> followed by the question text.<br>
+          Each answer goes on its own line as <code>Answer text | points</code><br>
+          Separate questions with a blank line. Points are optional (auto-assigned if omitted).
+        </p>
+        <p style="color:#666;margin-bottom:8px">Example:</p>
+        <p>
+          <code>Q: Name something you buy in bulk at BJ's</code><br>
+          <code>Paper towels | 35</code><br>
+          <code>Snacks | 28</code><br>
+          <code>Laundry detergent | 18</code><br>
+          <code>&nbsp;</code><br>
+          <code>Q: Name a reason members love BJ's</code><br>
+          <code>Great prices | 42</code><br>
+          <code>Easy parking | 25</code>
+        </p>
+      </div>
+      <div class="bulk-wrap">
+        <h3>PASTE YOUR QUESTIONS HERE</h3>
+        <textarea class="bulk-ta" id="bulk-ta" placeholder="Q: Your question here&#10;Answer one | 40&#10;Answer two | 25&#10;Answer three | 15&#10;Answer four | 10&#10;Answer five | 7&#10;Answer six | 3&#10;&#10;Q: Next question here&#10;Answer one | 45&#10;Answer two | 30&#10;..."></textarea>
+        <div class="bulk-actions">
+          <button class="bulk-btn secondary" onclick="loadBulkExample()">Load Example</button>
+          <button class="bulk-btn primary" onclick="importBulk()">⬇ Import Questions</button>
+        </div>
+        <div class="bulk-msg" id="bulk-msg"></div>
+      </div>
+      <button class="start-btn" onclick="startGame()">▶ START GAME</button>
+      <div style="height:20px"></div>
+    </div>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="game-screen" class="screen">
+    <div class="game-body">
+      <div class="q-box">
+        <div class="q-label" id="qlbl">Question 1 of 1</div>
+        <div class="q-text" id="qtxt">Loading...</div>
+      </div>
+      <div class="board" id="board"></div>
+      <div class="strikes-row">
+        <div class="sx" id="sx1">✗</div>
+        <div class="sx" id="sx2">✗</div>
+        <div class="sx" id="sx3">✗</div>
+      </div>
+      <div class="ctrl-row">
+        <button class="cbtn danger" onclick="addStrike()">✗ Strike</button>
+        <button class="cbtn" onclick="resetStrikes()">Reset Strikes</button>
+        <button class="cbtn" onclick="resetRound()">Reset Round</button>
+        <button class="cbtn" onclick="revealAll()">Reveal All</button>
+      </div>
+      <div class="ctrl-row">
+        <button class="cbtn" onclick="prevRound()" id="pbtn">← Prev</button>
+        <span class="nav-info" id="rnd-nav">1/1</span>
+        <button class="cbtn" onclick="nextRound()" id="nbtn">Next →</button>
+        <button class="cbtn gold" onclick="award(1)">Award → <span id="an1">Team 1</span></button>
+        <button class="cbtn gold" onclick="award(2)">Award → <span id="an2">Team 2</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="winner-overlay">
+  <div class="winner-card">
+    <img class="winner-gif" src="Images/winnerScreen.gif" alt="celebration">
+    <img class="winner-logo" src="Images/bjs-logo.png" alt="BJ's Logo">
+    <h2>Winner!</h2>
+    <h1 id="winner-name">Team 1</h1>
+    <p id="winner-score">0 points</p>
+    <button onclick="playAgain()">Play Again</button>
+  </div>
+</div>
+
+<script>
+// ── AUDIO ─────────────────────────────────────────────
+const AC=new(window.AudioContext||window.webkitAudioContext)();
+let muted=false;
+let musicPlaying=false;
+let musicAudio;
+function resumeAC(){if(AC.state==='suspended')AC.resume();}
+function playTone(freq,type,dur,vol=0.3,delay=0){
+  if(muted)return;resumeAC();
+  const o=AC.createOscillator(),g=AC.createGain();
+  o.connect(g);g.connect(AC.destination);
+  o.type=type;o.frequency.setValueAtTime(freq,AC.currentTime+delay);
+  g.gain.setValueAtTime(vol,AC.currentTime+delay);
+  g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+delay+dur);
+  o.start(AC.currentTime+delay);o.stop(AC.currentTime+delay+dur+0.05);
+}
+function sndReveal(){playTone(523,'sine',.12,.25);playTone(659,'sine',.12,.25,.08);playTone(784,'sine',.18,.3,.16);}
+function sndStrike(){[180,160,140].forEach((f,i)=>playTone(f,'sawtooth',.18,.3,i*.08));}
+function sndAward(){[523,659,784,1047].forEach((f,i)=>playTone(f,'sine',.18,.3,i*.07));}
+function sndWinner(){[523,659,784,1047,784,1047,1175].forEach((f,i)=>playTone(f,'sine',.2,.35,i*.1));}
+function sndStart(){[330,440,523,659].forEach((f,i)=>playTone(f,'triangle',.15,.25,i*.06));}
+function toggleMute(){muted=!muted;document.getElementById('mute-btn').textContent=muted?'🔇':'🔊';}
+function toggleMusic(){
+  if(!musicAudio){
+    musicAudio=new Audio('../LIVE/GameAssets/Family%20Feud%202010.mp3');
+    musicAudio.loop=true;
+  }
+  if(musicPlaying){
+    musicAudio.pause();
+    document.getElementById('music-btn').textContent='▶';
+  }else{
+    musicAudio.play();
+    document.getElementById('music-btn').textContent='⏸';
+  }
+  musicPlaying=!musicPlaying;
+}
+
+// ── FULLSCREEN ─────────────────────────────────────────
+function toggleFS(){
+  resumeAC();
+  if(!document.fullscreenElement){
+    document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();
+    document.getElementById('fs-btn').textContent='✕ Exit Full';
+  }else{
+    document.exitFullscreen&&document.exitFullscreen();
+    document.getElementById('fs-btn').textContent='⛶ Fullscreen';
+  }
+}
+document.addEventListener('fullscreenchange',()=>{
+  if(!document.fullscreenElement)document.getElementById('fs-btn').textContent='⛶ Fullscreen';
+});
+
+// ── DATA ───────────────────────────────────────────────
+let rounds=[
+  {q:"Name a reason members love shopping at BJ's",answers:[["Great prices",40],["Bulk savings",25],["Easy parking",15],["Gas station",10],["Wide selection",7],["Easy returns",3]]},
+  {q:"Name something you buy in bulk at BJ's",answers:[["Paper towels",35],["Snacks",28],["Laundry detergent",18],["Beverages",12],["Meat",7]]},
+  {q:"Name a BJ's department members visit most",answers:[["Grocery",38],["Electronics",22],["Gas station",18],["Bakery",12],["Clothing",10]]},
+];
+let cur=0,scores=[0,0],strikes=0,bank=0,revealed=[];
+
+// ── TABS ──────────────────────────────────────────────
+function switchTab(t){
+  document.getElementById('pane-manual').style.display=t==='manual'?'block':'none';
+  document.getElementById('pane-bulk').style.display=t==='bulk'?'block':'none';
+  document.getElementById('tab-manual').classList.toggle('active',t==='manual');
+  document.getElementById('tab-bulk').classList.toggle('active',t==='bulk');
+  if(t==='manual')buildSetup();
+}
+
+// ── BULK IMPORT ───────────────────────────────────────
+const EXAMPLE=`Q: Name a reason members love shopping at BJ's
+Great prices | 40
+Bulk savings | 25
+Easy parking | 15
+Gas station | 10
+Wide selection | 7
+Easy returns | 3
+
+Q: Name something you buy in bulk at BJ's
+Paper towels | 35
+Snacks | 28
+Laundry detergent | 18
+Beverages | 12
+Meat | 7
+
+Q: Name a BJ's department members visit most
+Grocery | 38
+Electronics | 22
+Gas station | 18
+Bakery | 12
+Clothing | 10`;
+
+function loadBulkExample(){
+  document.getElementById('bulk-ta').value=EXAMPLE;
+  document.getElementById('bulk-msg').textContent='';
+}
+
+function importBulk(){
+  const raw=document.getElementById('bulk-ta').value.trim();
+  const msg=document.getElementById('bulk-msg');
+  if(!raw){msg.className='bulk-msg err';msg.textContent='Please paste some questions first.';return;}
+
+  const parsed=[];
+  const blocks=raw.split(/\n\s*\n/);
+  for(const block of blocks){
+    const lines=block.trim().split('\n').map(l=>l.trim()).filter(Boolean);
+    if(!lines.length)continue;
+    const qLine=lines.find(l=>/^Q:/i.test(l));
+    if(!qLine)continue;
+    const q=qLine.replace(/^Q:\s*/i,'').trim();
+    const ansLines=lines.filter(l=>!/^Q:/i.test(l));
+    const answers=[];
+    // auto-point scale if no points given
+    const defaultPts=[40,25,15,10,7,3];
+    ansLines.forEach((l,i)=>{
+      const parts=l.split('|');
+      const text=parts[0].trim();
+      const pts=parts[1]?parseInt(parts[1].trim(),10)||(defaultPts[i]||3):(defaultPts[i]||3);
+      if(text)answers.push([text,pts]);
+    });
+    if(q&&answers.length)parsed.push({q,answers});
+  }
+
+  if(!parsed.length){msg.className='bulk-msg err';msg.textContent='Could not parse any questions. Check the format and try again.';return;}
+  rounds=parsed;
+  msg.className='bulk-msg';
+  msg.textContent=`✓ Imported ${parsed.length} question${parsed.length>1?'s':''} successfully!`;
+  buildSetup();
+}
+
+// ── MANUAL SETUP ──────────────────────────────────────
+function buildSetup(){
+  const c=document.getElementById('rounds-container');c.innerHTML='';
+  rounds.forEach((r,ri)=>{
+    const d=document.createElement('div');d.className='round-card';
+    let ah='<div class="ans-grid">';
+    r.answers.forEach((a,ai)=>{
+      ah+=`<div class="ans-row"><span class="ans-n">${ai+1}</span>
+        <input type="text" placeholder="Answer…" value="${esc(a[0])}" oninput="rounds[${ri}].answers[${ai}][0]=this.value">
+        <input type="number" class="ans-pts" placeholder="pts" value="${a[1]}" oninput="rounds[${ri}].answers[${ai}][1]=+this.value">
+      </div>`;
+    });
+    ah+='</div>';
+    d.innerHTML=`<div class="rc-top">
+      <div class="rc-num">${ri+1}</div>
+      <input type="text" placeholder="Survey question…" value="${esc(r.q)}" oninput="rounds[${ri}].q=this.value">
+      ${rounds.length>1?`<button onclick="removeRound(${ri})">✕ Remove</button>`:''}
+    </div>${ah}`;
+    c.appendChild(d);
+  });
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function addRound(){
+  rounds.push({q:'',answers:[['',40],['',25],['',15],['',10],['',7],['',3]]});
+  buildSetup();
+  document.getElementById('rounds-container').lastChild.scrollIntoView({behavior:'smooth'});
+}
+function removeRound(i){if(rounds.length<=1)return;rounds.splice(i,1);buildSetup();}
+
+function startGame(){
+  resumeAC();
+  const v=rounds.filter(r=>r.q.trim()&&r.answers.some(a=>a[0].trim()));
+  if(!v.length){alert('Add at least one question with answers!');return;}
+  rounds=v;cur=0;scores=[0,0];strikes=0;bank=0;
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('game-screen').style.display='flex';
+  document.getElementById('main-hdr').style.display='flex';
+  updateScoreUI();loadRound();sndStart();
+}
+function goSetup(){
+  document.getElementById('setup-screen').style.display='flex';
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('main-hdr').style.display='none';
+  buildSetup();
+}
+
+// ── GAME ──────────────────────────────────────────────
+function loadRound(){
+  const r=rounds[cur];
+  revealed=r.answers.map(()=>false);
+  strikes=0;bank=0;
+  updateBankUI();updateStrikesUI();
+  document.getElementById('qlbl').textContent=`Question ${cur+1} of ${rounds.length}`;
+  document.getElementById('qtxt').textContent=r.q;
+  document.getElementById('rnd-nav').textContent=`${cur+1}/${rounds.length}`;
+  document.getElementById('pbtn').disabled=cur===0;
+  document.getElementById('nbtn').disabled=cur===rounds.length-1;
+  buildBoard();
+}
+function buildBoard(){
+  const b=document.getElementById('board'),r=rounds[cur];
+  b.innerHTML='';
+  r.answers.forEach((a,i)=>{
+    if(!a[0].trim())return;
+    const t=document.createElement('div');
+    t.className='tile'+(revealed[i]?' revealed':'');
+    t.id='t'+i;t.onclick=()=>revealTile(i);
+    // Use data attributes — text is rendered but invisible via CSS until revealed
+    t.innerHTML=`<div class="t-rank">${i+1}</div><div class="t-ans">${esc(a[0])}</div><div class="t-pts">${a[1]}</div>`;
+    b.appendChild(t);
+  });
+}
+function revealTile(i){
+  if(revealed[i])return;
+  revealed[i]=true;
+  const t=document.getElementById('t'+i);
+  if(t)t.classList.add('revealed');
+  bank+=(rounds[cur].answers[i][1]||0);
+  updateBankUI();sndReveal();
+}
+function revealAll(){rounds[cur].answers.forEach((_,i)=>revealTile(i));}
+function addStrike(){if(strikes>=3)return;strikes++;updateStrikesUI();sndStrike();}
+function updateStrikesUI(){[1,2,3].forEach(n=>document.getElementById('sx'+n).classList.toggle('lit',n<=strikes));}
+function resetStrikes(){strikes=0;updateStrikesUI();}
+function resetRound(){revealed=rounds[cur].answers.map(()=>false);strikes=0;bank=0;updateStrikesUI();updateBankUI();buildBoard();}
+function updateBankUI(){document.getElementById('bank-val').textContent=bank;}
+function award(team){
+  if(!bank)return;
+  scores[team-1]+=bank;bank=0;
+  updateBankUI();updateScoreUI();sndAward();
+  if(cur===rounds.length-1)setTimeout(checkWinner,400);
+}
+function updateScoreUI(){[1,2].forEach(n=>{document.getElementById('sp'+n).textContent=scores[n-1];});syncTeamNames();}
+function syncTeamNames(){[1,2].forEach(n=>{document.getElementById('an'+n).textContent=document.getElementById('sn'+n).textContent;});}
+function prevRound(){if(cur>0){cur--;loadRound();}}
+function nextRound(){if(cur<rounds.length-1){cur++;loadRound();}}
+function checkWinner(){
+  if(scores[0]===0&&scores[1]===0)return;
+  const w=scores[0]>=scores[1]?0:1;
+  document.getElementById('winner-name').textContent=document.getElementById('sn'+(w+1)).textContent;
+  document.getElementById('winner-score').textContent=scores[w]+' points';
+  document.getElementById('winner-overlay').classList.add('show');
+  sndWinner();
+}
+function playAgain(){
+  document.getElementById('winner-overlay').classList.remove('show');
+  scores=[0,0];bank=0;strikes=0;cur=0;
+  updateScoreUI();updateBankUI();loadRound();
+}
+
+// ── TEAM NAME EDITING ─────────────────────────────────
+function editName(n){
+  const box=document.getElementById('sb'+n),nameEl=document.getElementById('sn'+n);
+  if(box.classList.contains('editing'))return;
+  box.classList.add('editing');
+  const old=nameEl.textContent;
+  const inp=document.createElement('input');
+  inp.style.cssText='background:transparent;border:none;color:var(--gold);font-size:10px;width:80px;text-align:center;outline:none;font-family:Arial,sans-serif;letter-spacing:1px;text-transform:uppercase';
+  inp.value=old;inp.maxLength=14;
+  nameEl.replaceWith(inp);inp.focus();inp.select();
+  function save(){
+    const v=inp.value.trim()||old;
+    const span=document.createElement('div');span.className='sname';span.id='sn'+n;span.textContent=v;
+    inp.replaceWith(span);box.classList.remove('editing');syncTeamNames();
+  }
+  inp.onblur=save;inp.onkeydown=e=>{if(e.key==='Enter')save();};
+}
+
+// ── INIT ──────────────────────────────────────────────
+buildSetup();
+</script>
+</body>
+</html>
