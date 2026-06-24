@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BJ's Team Feud - Asset Manager</title>
+    <meta name="description" content="Helper dashboard to customize game assets (logo, winner celebration GIF, background music) for BJ's Team Feud.">
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Modern CSS Reset & CSS Variables */
+        :root {
+            --primary: #cc0000;
+            --primary-glow: rgba(204, 0, 0, 0.45);
+            --bg-dark: #070708;
+            --panel-bg: rgba(26, 26, 28, 0.65);
+            --border-color: rgba(204, 0, 0, 0.25);
+            --border-hover: rgba(204, 0, 0, 0.6);
+            --text-main: #f0f0f5;
+            --text-muted: #a0a0b0;
+            --gold: #f39c12;
+            --green: #2ecc71;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(204, 0, 0, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(26, 26, 26, 0.5) 0px, transparent 50%);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 30px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-logo img {
+            height: 40px;
+            width: auto;
+            border-radius: 4px;
+        }
+
+        .header-logo h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #fff, #cc0000);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hero-section h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-section p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .asset-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all var(--transition-speed);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .asset-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+            opacity: 0.7;
+        }
+
+        .asset-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(204, 0, 0, 0.15);
+        }
+
+        .asset-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .asset-title {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .asset-badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .asset-badge.active-custom {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        /* Preview Box */
+        .preview-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview-box img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 6px;
+            transition: transform var(--transition-speed);
+        }
+
+        .preview-box:hover img {
+            transform: scale(1.05);
+        }
+
+        .audio-preview {
+            width: 90%;
+        }
+
+        .audio-icon {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Input Controls */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .url-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 14px;
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: all var(--transition-speed);
+        }
+
+        .url-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(204, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .file-upload-zone {
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            position: relative;
+        }
+
+        .file-upload-zone:hover {
+            border-color: var(--primary);
+            background: rgba(204, 0, 0, 0.03);
+        }
+
+        .file-upload-zone input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-text {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .file-upload-text strong {
+            color: var(--text-main);
+        }
+
+        /* Buttons */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            border: none;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #b30000;
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .btn-danger {
+            background: rgba(204, 0, 0, 0.15);
+            border: 1px solid rgba(204, 0, 0, 0.3);
+            color: #ff4a4a;
+        }
+
+        .btn-danger:hover {
+            background: rgba(204, 0, 0, 0.3);
+            color: #fff;
+        }
+
+        /* Large Action Panel */
+        .launcher-panel {
+            background: linear-gradient(135deg, rgba(26, 26, 28, 0.9) 0%, rgba(13, 13, 14, 0.9) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            margin-top: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .launch-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .launch-desc {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 15px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .launch-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 16px 40px;
+            font-size: 18px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e1e24;
+            border-left: 4px solid var(--primary);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-success {
+            border-left-color: var(--green);
+        }
+
+        footer {
+            padding: 30px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-logo">
+            <img src="bjs-logo.png" alt="BJ's Logo" id="hdr-logo-img">
+            <h1>BJ'S TEAM FEUD</h1>
+        </div>
+        <a href="teamFeud.html" class="nav-btn" id="btn-back-game">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>
+            Back to Game
+        </a>
+    </header>
+
+    <main>
+        <div class="hero-section">
+            <h2>Asset Manager</h2>
+            <p>Customize the visual and audio elements of the Team Feud game. Upload your own local files or specify online URLs to brand the experience.</p>
+        </div>
+
+        <div class="assets-grid">
+            <!-- LOGO ASSET CARD -->
+            <div class="asset-card" id="card-logo">
+                <div>
+                    <div class="asset-header">
+                        <div class="asset-title">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/></svg>
+                            BJ's Logo
+                        </div>
+                        <span class="asset-badge" id="badge-logo">Default</span>
+                    </div>
+
+                    <div class="preview-box" id="preview-logo-box">
+                        <img src="bjs-logo.png" alt="Logo Preview" id="preview-logo">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="input-logo-url">Asset URL / Path</label>
+                        <input type="text" class="url-input" id="input-logo-url" placeholder="e.g. bjs-logo.png or https://...">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Or Upload File</label>
+                        <div class="file-upload-zone">
+                            <input type="file" id="file-logo" accept="image/*">
+                            <div class="file-upload-text">
+                                <strong>Click to upload</strong> or drag and drop
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-secondary" onclick="resetAsset('logo')">Reset Default</button>
+                    <button class="btn btn-primary" onclick="saveAssetUrl('logo')">Apply URL</button>
+                </div>
+            </div>
+
+            <!-- WINNER SCREEN ASSET CARD -->
+            <div class="asset-card" id="card-winner">
+                <div>
+                    <div class="asset-header">
+                        <div class="asset-title">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM2 2h12v9H2V2z"/></svg>
+                            Winner GIF
+                        </div>
+                        <span class="asset-badge" id="badge-winner">Default</span>
+                    </div>
+
+                    <div class="preview-box" id="preview-winner-box">
+                        <img src="winnerScreen.gif" alt="Winner GIF Preview" id="preview-winner">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="input-winner-url">Asset URL / Path</label>
+                        <input type="text" class="url-input" id="input-winner-url" placeholder="e.g. winnerScreen.gif or https://...">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Or Upload File</label>
+                        <div class="file-upload-zone">
+                            <input type="file" id="file-winner" accept="image/gif,image/webp,image/png,image/jpeg">
+                            <div class="file-upload-text">
+                                <strong>Click to upload</strong> or drag and drop
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-secondary" onclick="resetAsset('winner')">Reset Default</button>
+                    <button class="btn btn-primary" onclick="saveAssetUrl('winner')">Apply URL</button>
+                </div>
+            </div>
+
+            <!-- THEME MUSIC ASSET CARD -->
+            <div class="asset-card" id="card-music">
+                <div>
+                    <div class="asset-header">
+                        <div class="asset-title">
+                            <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M9 13c0 1.105-1.12 2-2.5 2S4 14.105 4 13s1.12-2 2.5-2 2.5.895 2.5 2z"/><path fill-rule="evenodd" d="M9 3v10H8V3h1z"/><path d="M8 2.82a1 1 0 0 1 .804-.98l3-1A1 1 0 0 1 13 1.82V3.5a.5.5 0 0 1-.5.5h-4a.5.5 0 0 1-.5-.5V2.82z"/></svg>
+                            Background Music
+                        </div>
+                        <span class="asset-badge" id="badge-music">Default</span>
+                    </div>
+
+                    <div class="preview-box" id="preview-music-box" style="flex-direction: column;">
+                        <div class="audio-icon">♪</div>
+                        <audio class="audio-preview" id="preview-music" controls src="Family Feud 2010.mp3"></audio>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="input-music-url">Asset URL / Path</label>
+                        <input type="text" class="url-input" id="input-music-url" placeholder="e.g. Family Feud 2010.mp3 or https://...">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Or Upload File</label>
+                        <div class="file-upload-zone">
+                            <input type="file" id="file-music" accept="audio/*">
+                            <div class="file-upload-text">
+                                <strong>Click to upload</strong> or drag and drop
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn btn-secondary" onclick="resetAsset('music')">Reset Default</button>
+                    <button class="btn btn-primary" onclick="saveAssetUrl('music')">Apply URL</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="launcher-panel">
+            <h3 class="launch-title">READY TO PLAY?</h3>
+            <p class="launch-desc">All configured asset overrides are automatically stored securely in your browser's IndexedDB and will be loaded instantly by the main game board.</p>
+            <div class="launch-actions">
+                <button class="btn btn-secondary btn-large" onclick="resetAllAssets()" id="btn-reset-all">
+                    Reset All to Default
+                </button>
+                <a href="teamFeud.html" class="btn btn-primary btn-large" id="btn-launch-game">
+                    Launch Team Feud Game
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 13.5a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1 0-1h6a.5.5 0 0 1 .5.5zm-8.854-8.854a.5.5 0 0 1 .708 0L8.5 7.293l2.646-2.647a.5.5 0 0 1 .708.708L9.207 8l2.647 2.646a.5.5 0 0 1-.708.708L8.5 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.793 8 5.146 5.354a.5.5 0 0 1 0-.708z"/></svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast-el">
+        <span class="toast-icon">✓</span>
+        <span id="toast-message">Asset updated successfully!</span>
+    </div>
+
+    <footer>
+        <p>© 2026 BJ's Wholesale Club. Team Feud Customizer.</p>
+    </footer>
+
+    <script>
+        // IndexedDB Configuration
+        const DB_NAME = 'TeamFeudAssetsDB';
+        const STORE_NAME = 'assets';
+        const defaults = {
+            logo: 'bjs-logo.png',
+            winner: 'winnerScreen.gif',
+            music: 'Family Feud 2010.mp3'
+        };
+
+        function getDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME);
+                    }
+                };
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        async function getAsset(key, defaultVal) {
+            try {
+                const db = await getDB();
+                return new Promise((resolve) => {
+                    const tx = db.transaction(STORE_NAME, 'readonly');
+                    const store = tx.objectStore(STORE_NAME);
+                    const req = store.get(key);
+                    req.onsuccess = () => resolve(req.result || null);
+                    req.onerror = () => resolve(null);
+                });
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function setAsset(key, value) {
+            const db = await getDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const req = store.put(value, key);
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function removeAsset(key) {
+            const db = await getDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(STORE_NAME, 'readwrite');
+                const store = tx.objectStore(STORE_NAME);
+                const req = store.delete(key);
+                req.onsuccess = () => resolve();
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        // Show Toast Notification
+        function showToast(message, isSuccess = true) {
+            const toast = document.getElementById('toast-el');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = message;
+            if (isSuccess) {
+                toast.classList.add('toast-success');
+                toast.querySelector('.toast-icon').textContent = '✓';
+            } else {
+                toast.classList.remove('toast-success');
+                toast.querySelector('.toast-icon').textContent = '✕';
+            }
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Load Asset Previews & Badge States
+        async function updateUI() {
+            const logoAsset = await getAsset('logo');
+            const winnerAsset = await getAsset('winner');
+            const musicAsset = await getAsset('music');
+
+            // Logo UI
+            const logoPreview = document.getElementById('preview-logo');
+            const logoBadge = document.getElementById('badge-logo');
+            const logoUrlInput = document.getElementById('input-logo-url');
+            if (logoAsset) {
+                logoPreview.src = logoAsset instanceof Blob ? URL.createObjectURL(logoAsset) : logoAsset;
+                logoBadge.textContent = 'Custom';
+                logoBadge.classList.add('active-custom');
+                if (typeof logoAsset === 'string') {
+                    logoUrlInput.value = logoAsset;
+                } else {
+                    logoUrlInput.value = '';
+                }
+            } else {
+                logoPreview.src = defaults.logo;
+                logoBadge.textContent = 'Default';
+                logoBadge.classList.remove('active-custom');
+                logoUrlInput.value = '';
+            }
+
+            // Winner GIF UI
+            const winnerPreview = document.getElementById('preview-winner');
+            const winnerBadge = document.getElementById('badge-winner');
+            const winnerUrlInput = document.getElementById('input-winner-url');
+            if (winnerAsset) {
+                winnerPreview.src = winnerAsset instanceof Blob ? URL.createObjectURL(winnerAsset) : winnerAsset;
+                winnerBadge.textContent = 'Custom';
+                winnerBadge.classList.add('active-custom');
+                if (typeof winnerAsset === 'string') {
+                    winnerUrlInput.value = winnerAsset;
+                } else {
+                    winnerUrlInput.value = '';
+                }
+            } else {
+                winnerPreview.src = defaults.winner;
+                winnerBadge.textContent = 'Default';
+                winnerBadge.classList.remove('active-custom');
+                winnerUrlInput.value = '';
+            }
+
+            // Music UI
+            const musicPreview = document.getElementById('preview-music');
+            const musicBadge = document.getElementById('badge-music');
+            const musicUrlInput = document.getElementById('input-music-url');
+            if (musicAsset) {
+                musicPreview.src = musicAsset instanceof Blob ? URL.createObjectURL(musicAsset) : musicAsset;
+                musicBadge.textContent = 'Custom';
+                musicBadge.classList.add('active-custom');
+                if (typeof musicAsset === 'string') {
+                    musicUrlInput.value = musicAsset;
+                } else {
+                    musicUrlInput.value = '';
+                }
+            } else {
+                musicPreview.src = defaults.music;
+                musicBadge.textContent = 'Default';
+                musicBadge.classList.remove('active-custom');
+                musicUrlInput.value = '';
+            }
+
+            // Sync Header Logo
+            document.getElementById('hdr-logo-img').src = logoPreview.src;
+        }
+
+        // Action: Apply URL / Relative Path
+        async function saveAssetUrl(key) {
+            const input = document.getElementById(`input-${key}-url`);
+            const val = input.value.trim();
+            if (!val) {
+                showToast(`Please enter a URL or path for the ${key}.`, false);
+                return;
+            }
+            await setAsset(key, val);
+            showToast(`${key.charAt(0).toUpperCase() + key.slice(1)} URL applied!`);
+            updateUI();
+        }
+
+        // Action: Reset single asset to default
+        async function resetAsset(key) {
+            await removeAsset(key);
+            showToast(`${key.charAt(0).toUpperCase() + key.slice(1)} reset to default.`);
+            updateUI();
+        }
+
+        // Action: Reset all assets to default
+        async function resetAllAssets() {
+            await removeAsset('logo');
+            await removeAsset('winner');
+            await removeAsset('music');
+            showToast('All assets reset to default values.');
+            updateUI();
+        }
+
+        // Handle File Upload Change
+        function setupFileHandler(key) {
+            const fileInput = document.getElementById(`file-${key}`);
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                try {
+                    await setAsset(key, file);
+                    showToast(`${key.charAt(0).toUpperCase() + key.slice(1)} file uploaded!`);
+                    updateUI();
+                } catch (err) {
+                    showToast('Failed to save file. Try using a smaller file.', false);
+                    console.error(err);
+                }
+            });
+        }
+
+        // Initialize Page handlers & data
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            setupFileHandler('logo');
+            setupFileHandler('winner');
+            setupFileHandler('music');
+        });
+    </script>
+</body>
+</html>
