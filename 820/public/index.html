@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="DC-820 Workspace and Project Hub. Centrally managing and launching web applications, tracking systems, and interactive tools.">
+  <meta name="theme-color" content="#09090b">
+  <title>dc-820 // Project Hub</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Canvas Background for Particle Interaction -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- Ambient Glow Effects -->
+  <div class="ambient-glow" id="glow-1"></div>
+  <div class="ambient-glow" id="glow-2"></div>
+  <div class="mouse-glow" id="mouse-glow"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-left">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <div class="cube-face front"></div>
+            <div class="cube-face back"></div>
+            <div class="cube-face left"></div>
+            <div class="cube-face right"></div>
+            <div class="cube-face top"></div>
+            <div class="cube-face bottom"></div>
+          </div>
+          <div class="logo-text">
+            <span class="logo-title">TTS-DC-820</span>
+            <span class="logo-subtitle">project directory</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-text">All Systems Operational</span>
+        </div>
+        <div class="vertical-divider"></div>
+        <div class="time-widget">
+          <span class="time-label">LOCAL TIME</span>
+          <span id="live-time" class="time-value">--:--:--</span>
+        </div>
+        <div class="vertical-divider"></div>
+        <button id="audio-toggle" class="icon-btn" title="Toggle UI Sounds" aria-label="Toggle UI Sounds">
+          <i data-lucide="volume-2"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="dashboard">
+      <!-- Welcome Banner -->
+      <section class="welcome-banner">
+        <div class="banner-content">
+          <h1>Central Navigation Hub</h1>
+          <p>A landing page for active developments, prototype tools, and project management portals across the DC-820
+            network.</p>
+        </div>
+        <div class="banner-stats">
+          <div class="stat-box">
+            <span class="stat-num" id="stat-active-count">3</span>
+            <span class="stat-label">Active Projects</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-num" id="stat-ping">-- ms</span>
+            <span class="stat-label">Network Latency</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects Grid -->
+      <section class="projects-section">
+        <h2 class="section-title"><i data-lucide="layout-grid"></i> Project Portal</h2>
+
+        <div class="projects-grid">
+          <!-- Card 1: EquipTrack Launch -->
+          <div class="project-card" data-tilt>
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="card-icon gradient-blue">
+                <i data-lucide="truck"></i>
+              </div>
+              <span class="badge badge-active">Active</span>
+            </div>
+            <div class="card-body">
+              <h3>BJ's EquipTrack</h3>
+              <p class="project-subtitle">Product Site & Launch Portal</p>
+              <p class="project-desc">An enterprise warehouse equipment tracker designed to digitize operational
+                workflows, eliminate paperwork, and optimize battery asset utilization.</p>
+            </div>
+            <div class="card-footer">
+              <div class="tech-tags">
+                <span>Next.js</span>
+                <span>React</span>
+                <span>Tailwind</span>
+              </div>
+              <a href="https://equiptrack-app.teamturnersolutions.com" target="_blank" rel="noopener noreferrer"
+                class="launch-btn" data-sound="click">
+                <span>Launch</span>
+                <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 2: Team Feud -->
+          <div class="project-card" data-tilt>
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="card-icon gradient-purple">
+                <i data-lucide="users"></i>
+              </div>
+              <span class="badge badge-ready">Ready</span>
+            </div>
+            <div class="card-body">
+              <h3>Team Feud</h3>
+              <p class="project-subtitle">Interactive Game & Asset Hub</p>
+              <p class="project-desc">High-fidelity gamification platform for team engagements, complete with dynamic
+                scoring engines, sound boards, and visual asset controllers.</p>
+            </div>
+            <div class="card-footer">
+              <div class="tech-tags">
+                <span>HTML5</span>
+                <span>Vanilla CSS</span>
+                <span>Web Audio</span>
+              </div>
+              <a href="https://equiptrack-app.teamturnersolutions.com/team-feud" target="_blank"
+                rel="noopener noreferrer" class="launch-btn" data-sound="click">
+                <span>Launch</span>
+                <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 3: EquipTrack Admin -->
+          <div class="project-card" data-tilt>
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="card-icon gradient-amber">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <span class="badge badge-internal">Internal</span>
+            </div>
+            <div class="card-body">
+              <h3>EquipTrack Admin</h3>
+              <p class="project-subtitle">Operations Control Center</p>
+              <p class="project-desc">Administrative database portal, tracking configuration schemas, operational
+                metrics, and containerized backends.</p>
+            </div>
+            <div class="card-footer">
+              <div class="tech-tags">
+                <span>Next.js</span>
+                <span>Docker</span>
+                <span>SQLite</span>
+              </div>
+              <a href="https://equiptrack-app.teamturnersolutions.com/admin" target="_blank" rel="noopener noreferrer"
+                class="launch-btn" data-sound="click">
+                <span>Launch</span>
+                <i data-lucide="arrow-up-right"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 4: Future Project Hub -->
+          <div class="project-card placeholder-card" data-tilt>
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <div class="card-icon gradient-grey">
+                <i data-lucide="plus-circle"></i>
+              </div>
+              <span class="badge badge-pending">Pending</span>
+            </div>
+            <div class="card-body">
+              <h3>New Project</h3>
+              <p class="project-subtitle">Workspace Expansion</p>
+              <p class="project-desc">A template slot reserved for upcoming microservices, tools, or experimental
+                platforms within the dc-820 domain.</p>
+            </div>
+            <div class="card-footer">
+              <div class="tech-tags">
+                <span>Config</span>
+                <span>Deploy</span>
+              </div>
+              <button class="launch-btn create-btn" id="create-project-btn" data-sound="click">
+                <span>Initialize</span>
+                <i data-lucide="plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions / Terminal Console -->
+      <section class="console-section">
+        <div class="console-header">
+          <div class="console-title">
+            <i data-lucide="terminal"></i>
+            <span>DC-820 Workspace Console</span>
+          </div>
+          <div class="console-controls">
+            <span class="control-dot red"></span>
+            <span class="control-dot yellow"></span>
+            <span class="control-dot green"></span>
+          </div>
+        </div>
+        <div class="console-body">
+          <div class="console-line system-msg">Initializing TTS-DC-820 project directory... Done.</div>
+          <div class="console-line system-msg">Firebase hosting environment: DC-820 (default)</div>
+          <div class="console-line system-msg">Type 'help' to list available commands.</div>
+          <div class="console-output" id="console-output"></div>
+          <div class="console-input-row">
+            <span class="console-prompt">TTS-DC-820:~$</span>
+            <input type="text" id="console-input" placeholder="Enter command..." autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <div class="footer-left">
+        <span>&copy; 2026 Team Turner Solutions Workspace.</span>
+        <div class="footer-socials">
+          <a href="https://github.com/teamturnersolutions" target="_blank" rel="noopener noreferrer" title="GitHub"
+            class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-github">
+              <path
+                d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+              <path d="M9 18c-4.51 2-5-2-7-2" />
+            </svg>
+          </a>
+          <a href="https://linkedin.com/in/teamturnersolutions" target="_blank" rel="noopener noreferrer"
+            title="LinkedIn" class="social-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-linkedin">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect width="4" height="12" x="2" y="9" />
+              <circle cx="4" cy="4" r="2" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-right">
+        <span class="footer-link" id="theme-reset-btn">Reset Workspace Layout</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Script File -->
+  <script src="app.js"></script>
+</body>
+
+</html>
